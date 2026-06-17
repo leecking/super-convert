@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全能工具箱 - 免费在线工具集</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"全能工具箱","description":"免费在线工具集：图片压缩、二维码生成、调色板提取、Base64编解码、字数统计、单位换算、文本转换、颜色工具。纯浏览器本地处理，不上传服务器。","applicationCategory":"UtilityApplication","operatingSystem":"All","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2ff;--bg2:#fff;--card:rgba(255,255,255,0.75);--text:#1a1a2e;--text2:#555;--text3:#999;--c1:#6366f1;--c2:#8b5cf6;--c3:#10b981;--bd:rgba(99,102,241,0.15);--r:12px;--tr:all 0.3s ease}
+[data-theme=dark]{--bg:#0f0f1a;--bg2:#1a1a2e;--card:rgba(26,26,46,0.85);--text:#e8e8f0;--text2:#a0a0c0;--text3:#606080;--bd:rgba(99,102,241,0.25)}
+body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:var(--tr)}
+.app{max-width:1200px;margin:0 auto;padding:20px}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px;flex-wrap:wrap}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:10px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:14px;color:var(--text);transition:var(--tr);backdrop-filter:blur(8px)}
+.btn:hover{background:var(--c1);color:#fff;border-color:var(--c1)}
+.btn-primary{background:var(--c1);color:#fff;border-color:var(--c1)}.btn-primary:hover{opacity:0.9}
+.btn-sm{padding:5px 12px;font-size:13px}
+.hero{text-align:center;padding:40px 0 30px}
+.hero h1{font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:16px;color:var(--text2);max-width:500px;margin:0 auto 16px;line-height:1.6}
+.badge{display:inline-block;padding:4px 14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:16px}
+.search-wrap{max-width:400px;margin:0 auto 20px;position:relative}
+.search-wrap input{width:100%;padding:12px 16px 12px 40px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font-size:14px;color:var(--text);outline:none;transition:var(--tr)}
+.search-wrap input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px}
+.cats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
+.cat{padding:6px 16px;border-radius:20px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:13px;color:var(--text2);transition:var(--tr);backdrop-filter:blur(8px)}
+.cat:hover,.cat.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+.card{background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:var(--r);padding:20px;cursor:pointer;transition:var(--tr);position:relative}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(99,102,241,0.12);border-color:var(--c2)}
+.card .icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+.card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.card p{font-size:13px;color:var(--text2);line-height:1.5}
+.card .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+.card .tag{padding:2px 8px;border-radius:10px;font-size:11px;background:rgba(99,102,241,0.08);color:var(--c1);border:1px solid rgba(99,102,241,0.1)}
+.overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:var(--tr)}
+.overlay.show{opacity:1;visibility:visible}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)scale(0.9);width:min(92vw,720px);max-height:85vh;overflow-y:auto;background:var(--bg2);border-radius:16px;border:1px solid var(--bd);z-index:1001;opacity:0;visibility:hidden;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal.show{opacity:1;visibility:visible;transform:translate(-50%,-50%)scale(1)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--bg2);z-index:2;border-radius:16px 16px 0 0}
+.modal-hdr h2{font-size:17px;font-weight:700}
+.close{width:32px;height:32px;border-radius:8px;border:none;background:var(--card);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:var(--tr)}
+.close:hover{background:var(--c1);color:#fff}
+.modal-body{padding:20px}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--bd);font-size:12px;color:var(--text3);text-align:center}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);font-size:14px;color:var(--text);outline:none;transition:var(--tr);font-family:inherit}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(99,102,241,0.12)}
+.form-group textarea{resize:vertical;min-height:80px}
+.result-box{padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;font-size:13px;word-break:break-all;min-height:40px;margin-bottom:8px}
+.drop-zone{border:2px dashed var(--bd);border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:var(--tr);margin-bottom:12px}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--c1);background:rgba(99,102,241,0.05)}
+.drop-zone p{color:var(--text3);font-size:14px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:12px;background:var(--text);color:var(--bg);font-size:14px;z-index:9999;opacity:0;transition:var(--tr);pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp 0.4s ease forwards;opacity:0}
+.card:nth-child(1){animation-delay:0s}.card:nth-child(2){animation-delay:0.04s}.card:nth-child(3){animation-delay:0.08s}.card:nth-child(4){animation-delay:0.12s}
+.card:nth-child(5){animation-delay:0.16s}.card:nth-child(6){animation-delay:0.2s}.card:nth-child(7){animation-delay:0.24s}.card:nth-child(8){animation-delay:0.28s}
+</style>
+
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.svg" sizes="192x192">
+<link rel="apple-touch-icon" href="/icon-192.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta name="keywords" content="在线工具,图片压缩,二维码生成,调色板提取,Base64编解码,字数统计,单位换算,文本转换,颜色工具,免费工具,在线图片处理">
+
+<meta property="og:title" content="全能工具箱 - 免费在线工具集">
+<meta property="og:description" content="图片压缩、二维码生成、调色板提取、Base64编解码等8个免费工具，纯浏览器本地处理。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolbox-new.surge.sh">
+</head>
+<body>
+<div class="app">
+<header class="hdr">
+<div class="logo">🔧 全能工具</div>
+<div class="hdr-actions">
+<span id="favCount" class="badge" style="margin:0;background:var(--card);color:var(--text2);border:1px solid var(--bd)">⭐ 0</span>
+<button class="btn btn-sm" id="themeBtn" onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+<section class="hero">
+<div class="badge">🔒 隐私优先 · 本地处理 · 不上传服务器</div>
+<h1>图片压缩 · 二维码 · 调色板<br>一个网站全搞定</h1>
+<p>不用装软件、不用注册账号。打开浏览器就能用的免费工具集。</p>
+</section>
+<div class="search-wrap">
+<span class="search-icon">🔍</span>
+<input type="text" id="searchInput" placeholder="搜索工具..." oninput="renderTools()">
+</div>
+<div class="cats" id="catTabs">
+<span class="cat on" data-cat="all" onclick="setCat(this)">全部</span>
+<span class="cat" data-cat="image" onclick="setCat(this)">🖼 图片</span>
+<span class="cat" data-cat="dev" onclick="setCat(this)">💻 开发</span>
+<span class="cat" data-cat="text" onclick="setCat(this)">📝 文本</span>
+<span class="cat" data-cat="util" onclick="setCat(this)">🔧 实用</span>
+</div>
+<div class="grid" id="toolGrid"></div>
+</div>
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="modal" id="panel">
+<div class="modal-hdr"><h2 id="panelTitle">工具</h2><button class="close" onclick="closePanel()">✕</button></div>
+<div class="modal-body" id="panelBody"></div>
+<div class="modal-foot">🔒 所有处理在浏览器本地完成，数据不上传服务器</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var TOOLS = [
+  {id:'img-compress',name:'图片压缩',icon:'🖼',color:'#6366f1',cat:'image',desc:'压缩PNG/JPG/WebP图片，可调节质量',tags:['PNG','JPG','WebP','批量']},
+  {id:'qrcode',name:'二维码生成',icon:'📱',color:'#10b981',cat:'dev',desc:'生成自定义二维码',tags:['QR码','自定义','下载']},
+  {id:'palette',name:'调色板提取',icon:'🎨',color:'#f59e0b',cat:'image',desc:'从图片中提取主色调',tags:['取色','K均值','配色']},
+  {id:'base64',name:'Base64编解码',icon:'🔐',color:'#ef4444',cat:'dev',desc:'文本/文件Base64编码解码',tags:['编码','解码','文件']},
+  {id:'wordcount',name:'字数统计',icon:'📝',color:'#ec4899',cat:'text',desc:'实时统计字符数/单词数/行数等',tags:['实时','阅读时长']},
+  {id:'unitconv',name:'单位换算',icon:'📐',color:'#14b8a6',cat:'util',desc:'长度/重量/温度/面积/体积/速度',tags:['6类','精确']},
+  {id:'texttransform',name:'文本转换',icon:'✏',color:'#8b5cf6',cat:'text',desc:'10种文本转换：大小写/反转/驼峰等',tags:['10种','批量']},
+  {id:'color',name:'颜色工具',icon:'🌈',color:'#f97316',cat:'util',desc:'HEX/RGB/HSL互转/互补色推荐',tags:['色值','转换','配色']}
+];
+var favorites = JSON.parse(localStorage.getItem('favs') || '[]');
+function renderTools(){
+  var q = (document.getElementById('searchInput').value || '').toLowerCase();
+  var cat = (document.querySelector('.cat.on')?.dataset.cat) || 'all';
+  var grid = document.getElementById('toolGrid');
+  var html = '';
+  for(var i=0;i<TOOLS.length;i++){
+    var t = TOOLS[i];
+    if(cat !== 'all' && t.cat !== cat) continue;
+    if(q && !t.name.includes(q) && !t.desc.includes(q) && !(t.tags.some(function(tg){return tg.includes(q);}))) continue;
+    var isFav = favorites.includes(t.id);
+    html += '<div class="card" onclick="openTool(\''+t.id+'\')">';
+    html += '<div class="icon" style="background:'+t.color+'18;color:'+t.color+'">'+t.icon+'</div>';
+    html += '<h3>'+t.name+'</h3><p>'+t.desc+'</p>';
+    html += '<div class="tags">';
+    for(var j=0;j<t.tags.length;j++) html += '<span class="tag">'+t.tags[j]+'</span>';
+    html += '</div>';
+    html += '<span style="position:absolute;top:12px;right:12px;font-size:16px;cursor:pointer;color:'+(isFav?'#f59e0b':'var(--text3)')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')">'+(isFav?'★':'☆')+'</span>';
+    html += '</div>';
+  }
+  grid.innerHTML = html || '<p style="text-align:center;color:var(--text3);padding:40px">没有找到匹配的工具</p>';
+  document.getElementById('favCount').textContent = '⭐ '+favorites.length;
+}
+function setCat(el){
+  var cats = document.querySelectorAll('.cat');
+  for(var i=0;i<cats.length;i++) cats[i].classList.remove('on');
+  el.classList.add('on');
+  renderTools();
+}
+function toggleFav(id){
+  var i = favorites.indexOf(id);
+  if(i > -1) favorites.splice(i,1); else favorites.push(id);
+  localStorage.setItem('favs', JSON.stringify(favorites));
+  renderTools();
+}
+var savedTheme = localStorage.getItem('theme');
+if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+function toggleTheme(){
+  var d = document.documentElement;
+  var next = d.getAttribute('data-theme') === 'dark' ? '' : 'dark';
+  d.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+}
+document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+function openTool(id){
+  var tool = null;
+  for(var i=0;i<TOOLS.length;i++){if(TOOLS[i].id===id){tool=TOOLS[i];break;}}
+  if(!tool) return;
+  document.getElementById('panelTitle').textContent = tool.icon + ' ' + tool.name;
+  document.getElementById('panelBody').innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">⏳ 加载中...</div>';
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('panel').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  renderToolContent(id);
+}
+function closePanel(){
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('panel').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');}, 2000);
+}
+function copyText(txt){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){showToast('✅ 已复制');}).catch(function(){fallbackCopy(txt);});
+  } else { fallbackCopy(txt); }
+}
+function fallbackCopy(txt){
+  var ta = document.createElement('textarea');
+  ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta); showToast('✅ 已复制');
+}
+
+// Tool 1: Image Compressor
+function renderImgCompress(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div class="drop-zone" id="imgDrop"><p>📁 拖拽图片到此处，或点击选择文件</p><p style="font-size:12px;color:var(--text3);margin-top:4px">支持 PNG / JPG / WebP</p></div>' +
+    '<input type="file" id="imgFileInput" accept="image/png,image/jpeg,image/webp" multiple style="display:none">' +
+    '<div class="form-group"><label>压缩质量：<span id="qualityVal">80</span>%</label><input type="range" id="qualitySlider" min="10" max="100" value="80" oninput="document.getElementById(\'qualityVal\').textContent=this.value"></div>' +
+    '<div class="form-group"><label>输出格式</label><select id="imgFormat"><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap" id="imgResults"></div>';
+  document.getElementById('imgDrop').onclick = function(){document.getElementById('imgFileInput').click();};
+  document.getElementById('imgFileInput').onchange = function(){handleImgFiles(this.files);};
+}
+function handleImgFiles(files){
+  var q = parseInt(document.getElementById('qualitySlider').value) || 80;
+  var fmt = document.getElementById('imgFormat').value || 'image/jpeg';
+  var res = document.getElementById('imgResults');
+  res.innerHTML = '';
+  for(var fi = 0; fi < files.length; fi++){
+    (function(file){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          c.toBlob(function(blob){
+            var url = URL.createObjectURL(blob);
+            var savings = ((1 - blob.size / file.size) * 100).toFixed(1);
+            var div = document.createElement('div');
+            div.style.cssText = 'background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;width:calc(50% - 4px);min-width:200px';
+            var ext = fmt.split('/')[1];
+            var fname = 'compressed_' + file.name.replace(/\.[^.]+$/, '') + '.' + ext;
+            div.innerHTML = '<img src="'+url+'" style="width:100%;border-radius:6px"><div style="margin-top:8px;font-size:13px"><div>📄 '+file.name+'</div><div>📦 '+(file.size/1024).toFixed(1)+'KB → '+(blob.size/1024).toFixed(1)+'KB</div><div style="color:'+(savings>0?'#10b981':'#ef4444')+';font-weight:600">'+(savings>0?'↓':'↑')+' '+Math.abs(savings)+'%</div></div><button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="downloadFile(\''+url+'\',\''+fname+'\')">⬇️ 下载</button>';
+            res.appendChild(div);
+          }, fmt, q/100);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    })(files[fi]);
+  }
+}
+function downloadFile(url, name){
+  var a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+}
+
+// Tool 2: QR Code
+function renderQRCode(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div class="form-group"><label>输入内容</label><input type="text" id="qrInput" placeholder="输入文本或URL..." value="https://"></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label>前景色</label><input type="color" id="qrFg" value="#000000"></div><div class="form-group"><label>背景色</label><input type="color" id="qrBg" value="#ffffff"></div></div>' +
+    '<div class="form-group"><label>尺寸</label><select id="qrSize"><option value="128">128</option><option value="256" selected>256</option><option value="512">512</option></select></div>' +
+    '<div class="form-group"><label>纠错等级</label><select id="qrLevel"><option value="L">低 (7%)</option><option value="M" selected>中 (15%)</option><option value="Q">较高 (25%)</option><option value="H">高 (30%)</option></select></div>' +
+    '<button class="btn btn-primary" onclick="generateQR()" style="margin-bottom:12px">▶ 生成二维码</button>' +
+    '<div id="qrcode"></div>' +
+    '<div style="text-align:center;margin-top:8px"><button class="btn btn-sm" id="qrDownloadBtn" style="display:none" onclick="downloadQR()">⬇️ 下载二维码</button></div>';
+}
+function generateQR(){
+  var input = document.getElementById('qrInput').value;
+  if(!input.trim()){ showToast('⚠️ 请输入内容'); return; }
+  var fg = document.getElementById('qrFg').value.slice(1);
+  var bg = document.getElementById('qrBg').value.slice(1);
+  var size = parseInt(document.getElementById('qrSize').value) || 256;
+  var level = document.getElementById('qrLevel').value || 'M';
+  var url = 'https://api.qrserver.com/v1/create-qr-code/?size='+size+'x'+size+'&data='+encodeURIComponent(input)+'&color='+fg+'&bgcolor='+bg+'&ecc='+level;
+  document.getElementById('qrcode').innerHTML = '<img src="'+url+'" alt="QR Code" style="max-width:100%;border-radius:8px" id="qrImg">';
+  document.getElementById('qrDownloadBtn').style.display = 'inline-flex';
+}
+function downloadQR(){
+  var img = document.getElementById('qrImg');
+  if(img) { var a = document.createElement('a'); a.href = img.src; a.download = 'qrcode.png'; a.click(); }
+}
+
+// Tool 3: Palette
+function renderPalette(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div class="drop-zone" id="palDrop"><p>🎨 点击选择图片，提取主色调</p></div>' +
+    '<input type="file" id="palInput" accept="image/*" style="display:none">' +
+    '<div id="palResults"></div>';
+  document.getElementById('palDrop').onclick = function(){document.getElementById('palInput').click();};
+  document.getElementById('palInput').onchange = function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var c = document.createElement('canvas');
+        c.width = 100; c.height = 100;
+        c.getContext('2d').drawImage(img, 0, 0, 100, 100);
+        var data = c.getContext('2d').getImageData(0,0,100,100).data;
+        var colors = [];
+        for(var y=0;y<100;y+=5) for(var x=0;x<100;x+=5){
+          var pi = (y*100+x)*4;
+          colors.push([data[pi],data[pi+1],data[pi+2]]);
+        }
+        var k = 5, centroids = [];
+        for(var ci=0;ci<k;ci++) centroids.push(colors[Math.floor(Math.random()*colors.length)]);
+        for(var iter=0;iter<20;iter++){
+          var clusters = [[],[],[],[],[]];
+          for(var pi2=0;pi2<colors.length;pi2++){
+            var p = colors[pi2], minD = Infinity, best = 0;
+            for(var ci2=0;ci2<k;ci2++){
+              var d = (p[0]-centroids[ci2][0])**2 + (p[1]-centroids[ci2][1])**2 + (p[2]-centroids[ci2][2])**2;
+              if(d < minD){ minD = d; best = ci2; }
+            }
+            clusters[best].push(p);
+          }
+          for(var ci3=0;ci3<k;ci3++) if(clusters[ci3].length){
+            centroids[ci3] = [Math.round(clusters[ci3].reduce(function(s,pi3){return s+pi3[0];},0)/clusters[ci3].length),Math.round(clusters[ci3].reduce(function(s,pi3){return s+pi3[1];},0)/clusters[ci3].length),Math.round(clusters[ci3].reduce(function(s,pi3){return s+pi3[2];},0)/clusters[ci3].length)];
+          }
+        }
+        var counts = centroids.map(function(cent, idx){
+          return {c:cent, count: colors.filter(function(px){
+            var minD2 = Infinity, best2 = 0;
+            for(var j=0;j<k;j++){ var dd = (px[0]-centroids[j][0])**2 + (px[1]-centroids[j][1])**2 + (px[2]-centroids[j][2])**2; if(dd < minD2){ minD2 = dd; best2 = j; } }
+            return best2 === idx;
+          }).length};
+        });
+        counts.sort(function(a,b){return b.count - a.count;});
+        var h = '<div style="margin-bottom:12px"><img src="'+e.target.result+'" style="max-width:200px;border-radius:8px"></div><div style="display:flex;gap:8px;flex-wrap:wrap">';
+        for(var qi=0;qi<counts.length;qi++){
+          var hex = '#' + counts[qi].c.map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+          h += '<div style="text-align:center"><div class="color-swatch" style="background:'+hex+';width:48px;height:48px;border-radius:10px" onclick="copyText(\''+hex+'\')" title="点击复制 '+hex+'"></div><div style="font-size:11px;margin-top:4px;color:var(--text3)">'+hex+'</div></div>';
+        }
+        h += '</div><p style="font-size:12px;color:var(--text3);margin-top:8px">👆 点击色块复制色值</p>';
+        document.getElementById('palResults').innerHTML = h;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+}
+
+// Tool 4: Base64
+var b64Mode = 'encode';
+function renderBase64(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary btn-sm" id="b64EncBtn" onclick="switchB64(\'encode\')">🔐 编码</button><button class="btn btn-sm" id="b64DecBtn" onclick="switchB64(\'decode\')">🔓 解码</button></div>' +
+    '<div class="drop-zone" id="b64Drop"><p>📎 拖拽文件编码为Base64</p></div><input type="file" id="b64FileInput" style="display:none">' +
+    '<div class="form-group"><label id="b64Label">输入文本</label><textarea id="b64Input" rows="4" placeholder="在此输入文本..."></textarea></div>' +
+    '<button class="btn btn-primary btn-sm" onclick="execB64()" style="margin-bottom:12px">▶ 执行</button>' +
+    '<div class="form-group"><label>结果</label><div class="result-box" id="b64Result"><span style="color:var(--text3)">等待输入...</span></div><button class="btn btn-sm" onclick="copyResult(\'b64Result\')">📋 复制结果</button></div>';
+  document.getElementById('b64Drop').onclick = function(){document.getElementById('b64FileInput').click();};
+  document.getElementById('b64FileInput').onchange = function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      document.getElementById('b64Input').value = e.target.result.split(',')[1] || e.target.result;
+      document.getElementById('b64Label').textContent = '输入 (Base64 编码)';
+    };
+    reader.readAsDataURL(file);
+  };
+}
+function switchB64(mode){
+  b64Mode = mode;
+  document.getElementById('b64EncBtn').className = mode==='encode' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
+  document.getElementById('b64DecBtn').className = mode==='decode' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
+  document.getElementById('b64Label').textContent = mode==='encode' ? '输入文本' : '输入Base64';
+  document.getElementById('b64Input').placeholder = mode==='encode' ? '在此输入文本...' : '输入Base64编码...';
+}
+function execB64(){
+  var input = document.getElementById('b64Input').value;
+  if(!input.trim()){ showToast('⚠️ 请输入内容'); return; }
+  var res = document.getElementById('b64Result');
+  try {
+    if(b64Mode === 'encode') res.textContent = btoa(unescape(encodeURIComponent(input)));
+    else res.textContent = decodeURIComponent(escape(atob(input.trim())));
+  } catch(e){
+    res.innerHTML = '<span style="color:#ef4444">❌ 解码失败：输入不是有效的Base64编码</span>';
+  }
+}
+
+// Tool 5: Word Count
+function renderWordCount(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div class="form-group"><label>输入文本</label><textarea id="wcInput" rows="8" placeholder="在此输入文本..." oninput="updateWordCount()"></textarea></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">字符数（含空格）</div><div style="font-size:22px;font-weight:700;color:var(--c1)" id="wcChars">0</div></div>' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">字符数（不含空格）</div><div style="font-size:22px;font-weight:700;color:var(--c2)" id="wcNoSpace">0</div></div>' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">单词数</div><div style="font-size:22px;font-weight:700;color:#10b981" id="wcWords">0</div></div>' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">行数</div><div style="font-size:22px;font-weight:700;color:#f59e0b" id="wcLines">0</div></div>' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">段落数</div><div style="font-size:22px;font-weight:700;color:#ec4899" id="wcParas">0</div></div>' +
+    '<div class="result-box" style="text-align:center"><div style="font-size:11px;color:var(--text3)">阅读时长</div><div style="font-size:22px;font-weight:700;color:#8b5cf6" id="wcTime">0分钟</div></div></div>';
+}
+function updateWordCount(){
+  var t = document.getElementById('wcInput').value || '';
+  document.getElementById('wcChars').textContent = t.length;
+  document.getElementById('wcNoSpace').textContent = t.replace(/\s/g,'').length;
+  document.getElementById('wcWords').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('wcLines').textContent = t ? t.split('\n').filter(function(l){return l.trim();}).length : 0;
+  document.getElementById('wcParas').textContent = t ? t.split('\n\n').filter(function(p){return p.trim();}).length : 0;
+  document.getElementById('wcTime').textContent = Math.max(1, Math.round((t.trim() ? t.trim().split(/\s+/).length : 0) / 200)) + '分钟';
+}
+
+// Tool 6: Unit Converter
+var unitData = {
+  length:{name:'长度',units:['毫米','厘米','分米','米','千米','英寸','英尺','码','英里'],base:['mm','cm','dm','m','km','in','ft','yd','mi'],rates:{mm:1,cm:10,dm:100,m:1000,km:1000000,in:25.4,ft:304.8,yd:914.4,mi:1609344}},
+  weight:{name:'重量',units:['毫克','克','千克','吨','盎司','磅'],base:['mg','g','kg','t','oz','lb'],rates:{mg:0.001,g:1,kg:1000,t:1000000,oz:28.3495,lb:453.592}},
+  temp:{name:'温度',units:['摄氏度(°C)','华氏度(°F)','开尔文(K)'],base:['c','f','k'],rates:{}},
+  area:{name:'面积',units:['平方毫米','平方厘米','平方米','公顷','平方千米','平方英寸','平方英尺','英亩'],base:['mm2','cm2','m2','ha','km2','in2','ft2','ac'],rates:{mm2:1,cm2:100,m2:1e6,ha:1e10,km2:1e12,in2:645.16,ft2:92903.04,ac:4046856422.4}},
+  volume:{name:'体积',units:['毫升','升','立方米','加仑(美)','加仑(英)','立方英寸','立方英尺'],base:['ml','l','m3','gal','gal_uk','in3','ft3'],rates:{ml:1,l:1000,m3:1e6,gal:3785.41,gal_uk:4546.09,in3:16.3871,ft3:28316.8}},
+  speed:{name:'速度',units:['米/秒','千米/时','英里/时','节','马赫'],base:['m_s','km_h','mph','kn','mach'],rates:{m_s:1,km_h:0.277778,mph:0.44704,kn:0.514444,mach:343}}
+};
+var currentUnitCat = 'length';
+function renderUnitConv(){
+  var catBtns = '';
+  for(var key in unitData) catBtns += '<button class="btn btn-sm'+(key===currentUnitCat?' btn-primary':'')+'" onclick="switchUnitCat(\''+key+'\')">'+unitData[key].name+'</button>';
+  document.getElementById('panelBody').innerHTML = 
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+catBtns+'</div>' +
+    '<div class="form-group"><label>数值</label><input type="number" id="ucVal" value="1" oninput="updateUnitConv()"></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label>从</label><select id="ucFrom" onchange="updateUnitConv()"></select></div><div class="form-group"><label>到</label><select id="ucTo" onchange="updateUnitConv()"></select></div></div>' +
+    '<div class="form-group"><label>结果</label><div class="result-box" id="ucResult" style="font-size:18px;font-weight:700;text-align:center">1</div></div>';
+  switchUnitCat(currentUnitCat);
+}
+function switchUnitCat(cat){
+  currentUnitCat = cat;
+  var data = unitData[cat];
+  var fromSel = document.getElementById('ucFrom');
+  var toSel = document.getElementById('ucTo');
+  var opts1 = '', opts2 = '';
+  for(var i=0;i<data.units.length;i++){
+    opts1 += '<option value="'+data.base[i]+'">'+data.units[i]+'</option>';
+    opts2 += '<option value="'+data.base[i]+'">'+data.units[i]+'</option>';
+  }
+  fromSel.innerHTML = opts1;
+  toSel.innerHTML = opts2;
+  if(toSel.options.length > 1) toSel.selectedIndex = 1;
+  updateUnitConv();
+}
+function updateUnitConv(){
+  var data = unitData[currentUnitCat];
+  var val = parseFloat(document.getElementById('ucVal').value) || 0;
+  var from = document.getElementById('ucFrom').value;
+  var to = document.getElementById('ucTo').value;
+  var result;
+  if(currentUnitCat === 'temp'){
+    if(from === 'c') result = val;
+    else if(from === 'f') result = (val - 32) * 5/9;
+    else result = val - 273.15;
+    if(to === 'f') result = result * 9/5 + 32;
+    else if(to === 'k') result = result + 273.15;
+  } else {
+    result = val * data.rates[from] / data.rates[to];
+  }
+  document.getElementById('ucResult').textContent = result.toFixed(4) + ' ' + data.units[data.base.indexOf(to)];
+}
+
+// Tool 7: Text Transformer
+function renderTextTransform(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div class="form-group"><label>输入文本</label><textarea id="ttInput" rows="6" placeholder="输入要转换的文本..."></textarea></div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">' +
+    '<button class="btn btn-primary btn-sm" onclick="ttDo(\'upper\')">🔠 大写</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'lower\')">🔡 小写</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'capitalize\')">📚 首字母大写</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'reverse\')">↔️ 反转</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'trim\')">✂️ 去空格</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'sort\')">📊 排序行</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'unique\')">🔀 去重行</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'camel\')">🐫 驼峰</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'snake\')">🐍 蛇形</button>' +
+    '<button class="btn btn-sm" onclick="ttDo(\'kebab\')">🍢 烤肉串</button></div>' +
+    '<div class="form-group"><label>结果</label><div class="result-box" id="ttResult"><span style="color:var(--text3)">等待转换...</span></div><button class="btn btn-sm" onclick="copyResult(\'ttResult\')">📋 复制结果</button></div>';
+}
+function ttDo(mode){
+  var input = document.getElementById('ttInput').value;
+  var res = document.getElementById('ttResult');
+  if(!input.trim()){ res.innerHTML = '<span style="color:var(--text3)">请输入文本</span>'; return; }
+  var f = {
+    upper: function(){ return input.toUpperCase(); },
+    lower: function(){ return input.toLowerCase(); },
+    capitalize: function(){ return input.replace(/\b\w/g, function(c){ return c.toUpperCase(); }); },
+    reverse: function(){ return input.split('').reverse().join(''); },
+    trim: function(){ return input.replace(/\s+/g, ' ').trim(); },
+    sort: function(){ return input.split('\n').sort().join('\n'); },
+    unique: function(){ return [...new Set(input.split('\n'))].join('\n'); },
+    camel: function(){ return input.replace(/[-_\s]+(.)/g, function(_,c){ return c.toUpperCase(); }).replace(/^[A-Z]/, function(c){ return c.toLowerCase(); }); },
+    snake: function(){ return input.replace(/([A-Z])/g,'_$1').toLowerCase().replace(/^_/,'').replace(/[-\s]+/g,'_'); },
+    kebab: function(){ return input.replace(/([A-Z])/g,'-$1').toLowerCase().replace(/^-/,'').replace(/[_\s]+/g,'-'); }
+  };
+  res.textContent = (f[mode] || function(){ return input; })();
+}
+
+// Tool 8: Color Tools
+function renderColorPicker(){
+  document.getElementById('panelBody').innerHTML = 
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="form-group"><label>选择颜色</label><input type="color" id="cpColor" value="#6366f1" style="width:100%;height:60px;border-radius:10px;cursor:pointer;padding:2px;border:1px solid var(--bd);background:var(--card)"></div><div style="text-align:center"><div style="font-size:13px;color:var(--text3);margin-bottom:4px">预览</div><div id="cpPreview" style="width:100%;height:60px;border-radius:10px;background:#6366f1;border:1px solid var(--bd);transition:var(--tr)"></div></div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px">' +
+    '<div class="result-box" style="text-align:center;cursor:pointer" onclick="copyText(document.getElementById(\'cpHex\').textContent)"><div style="font-size:11px;color:var(--text3)">HEX</div><div style="font-size:16px;font-weight:700;color:var(--c1)" id="cpHex">#6366f1</div></div>' +
+    '<div class="result-box" style="text-align:center;cursor:pointer" onclick="copyText(document.getElementById(\'cpRgb\').textContent)"><div style="font-size:11px;color:var(--text3)">RGB</div><div style="font-size:13px;font-weight:700;color:var(--c2)" id="cpRgb">rgb(99,102,241)</div></div>' +
+    '<div class="result-box" style="text-align:center;cursor:pointer" onclick="copyText(document.getElementById(\'cpHsl\').textContent)"><div style="font-size:11px;color:var(--text3)">HSL</div><div style="font-size:13px;font-weight:700;color:#10b981" id="cpHsl">hsl(239,84%,67%)</div></div></div>' +
+    '<div style="margin-top:14px"><label style="font-size:13px;font-weight:600;color:var(--text2)">相似色 / 互补色</label><div class="color-swatches" id="cpRelated"></div></div>';
+  document.getElementById('cpColor').addEventListener('input', updateCP);
+  updateCP();
+}
+function updateCP(){
+  var hex = document.getElementById('cpColor').value;
+  var r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+  document.getElementById('cpPreview').style.background = hex;
+  document.getElementById('cpHex').textContent = hex;
+  document.getElementById('cpRgb').textContent = 'rgb('+r+','+g+','+b+')';
+  var mr=r/255, mg=g/255, mb=b/255, max=Math.max(mr,mg,mb), min=Math.min(mr,mg,mb), l=(max+min)/2;
+  var h=0, s=0;
+  if(max !== min){
+    var d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    if(max === mr) h = ((mg-mb)/d + (mg<mb?6:0))/6;
+    else if(max === mg) h = ((mb-mr)/d + 2)/6;
+    else h = ((mr-mg)/d + 4)/6;
+  }
+  document.getElementById('cpHsl').textContent = 'hsl('+(h*360|0)+','+(s*100|0)+'%,'+(l*100|0)+'%)';
+  var related = ['#'+((255-r)<<16|(255-g)<<8|(255-b)).toString(16).padStart(6,'0'),'#'+(((r+128)%255)<<16|((g+128)%255)<<8|((b+128)%255)).toString(16).padStart(6,'0'),'#'+((g<<16|b<<8|r)).toString(16).padStart(6,'0'),'#'+((b<<16|r<<8|g)).toString(16).padStart(6,'0')];
+  document.getElementById('cpRelated').innerHTML = related.map(function(c){ return '<div class="color-swatch" style="background:'+c+'" onclick="copyText(\''+c+'\')" title="点击复制 '+c+'"></div>'; }).join('');
+}
+
+function renderToolContent(id){
+  var fns = {'img-compress':renderImgCompress,'qrcode':renderQRCode,'palette':renderPalette,'base64':renderBase64,'wordcount':renderWordCount,'unitconv':renderUnitConv,'texttransform':renderTextTransform,'color':renderColorPicker};
+  if(fns[id]) setTimeout(fns[id], 50);
+}
+function copyResult(id){
+  var el = document.getElementById(id);
+  if(el) copyText(el.textContent || el.innerText);
+}
+renderTools();
+
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js");});}
+</script>
+</body>
+</html>
