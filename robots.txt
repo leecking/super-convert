@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://toolbox-new.surge.sh/sitemap.xml
